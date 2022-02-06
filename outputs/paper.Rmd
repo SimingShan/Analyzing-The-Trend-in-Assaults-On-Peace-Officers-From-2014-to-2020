@@ -18,21 +18,66 @@ library(tidyverse)
 library(ggplot2)
 ```
 
+```{r,echo=FALSE,message=FALSE}
+#### Preamble ####
+# Purpose: Download and import data
+# Author: Siming Shan
+# Data: 1 Februrary 2022
+# Contact: siming.shan@mail.utoronto.ca
+# License: MIT
+
+#### Workspace setup ####
+# install.packages("opendatatoronto")
+# install.packages("tidyverse")
+library(opendatatoronto)
+library(tidyverse)
+library(dplyr)
+
+#### download the data set from opendatatoronto ####
+
+package <- show_package("9cd09dd7-4453-43bd-af7a-caf42e565103")
+
+resources <- list_package_resources("9cd09dd7-4453-43bd-af7a-caf42e565103")
+
+raw_data <- resources %>% get_resource()
+
+```
 
 # Introduction
+In January 2022, two NYPD police officers Jason Riversa, 22 years old, and Wilbert Mora, 27 years old, were shot and killed during their investigation to a domestic incident.
 
 # Data
 ## Raw Dataset Introduction
 I utilized an Annual Victims of crime report[@citedata] from Toronto Open Data
 portal, using the `opendatatoronto` package[@citeopendatatoronto] to have a better understanding of the relationship between peace officers and the communities in Toronto. This data was published by Toronto Police Services, and the last time the data was refreshed on Aug 12, 2021. There are 854 observations in the raw data, each observation has 12 variables - id, index, ReportedYear, Category, Subtype, AssaultSubtype, Sex, AgeGroup, AgeCohort, Count, ObjectId, geometry. This dataset collects victim of crime which crime was reported between 2014 and 2020, and the victim of the crimes are classified as peace officers, other, and unknown. Subtypes of assault against peace officers include Aggravated Peace Officer, Assault Peace Officer, Assault Peace Officer Weapon/Bodily Harm, and Assault Resist Arrest. Since I am only interested in crimes against peace officers, I cleaned the data and extracted essential observations by using `R`[@citeR], `tidyverse`[@citetidyverse], `dplyr`[@citedplyr], and `janitor`[@citejanitor].
 
-## Cleaning Process And Cleaned Dataset
-The columns "index" and "geometry" of the dataset are all `NA` and `Null`, and the column "ObjectId" is redundant, thus I removed these columns as they did not provide useful information for analysis. Then I modified each column name to make them more organized. Finally, I extracted the observation that only peace officers were victims.
+```{r,echo=FALSE,message=FALSE}
+#### Preamble ####
+# Purpose: cleaning the dataset, and subset the dataset 
+# Author: Siming Shan
+# Data: 1 Februrary 2022
+# Contact: siming.shan@mail.utoronto.ca
+# License: MIT
 
-The cleaned dataset has 168 observations, each observations has 9 variables:
+### Workplace setup
+#install.packages("janitor")
+library(janitor)
+
+### since the columns "index" and "geometry" of the dataset are all NAs 
+### and Nulls, thus we delete these columns
+data_cleaned <- raw_data %>% select(-c(2,11,12))
+### clean the name of columns
+data_cleaned <- clean_names(data_cleaned)
+### since I am only interested in assaults against peace officers, delete all
+### other irrelevant observations
+data_cleaned <- data_cleaned %>% 
+  filter(assault_subtype != "N/A" & assault_subtype !="Other")
+```
+## Cleaning Process And Cleaned Dataset
+The columns "index" and "geometry" of the dataset are all `NA` and `Null`, and the column "ObjectId" is redundant, thus I removed these columns as they did not provide useful information for analysis. Then I modified each column name to make them more organized by using the package `janitor`[@citejanitor]. Finally, I extracted the observation that only peace officers were victims.The cleaned dataset has 168 observations, each observations has 9 variables:
 
 * id: Unique row identifier
-* reported_year: Year crime was reported
+* reported_year: Year crime was reported (from 2014 to 2020)
 * category: Crime category
 * subtype: Crime category subtype
 * assault_subtype: Breakdown of assault subtypes
@@ -41,7 +86,40 @@ The cleaned dataset has 168 observations, each observations has 9 variables:
 * age_cohort: Age cohort of identified victim
 * count: Count of identified victims
 
+A brief view of the dataset made by using knitr[@citeknitr] is shown below:
 
+```{r,echo=FALSE}
+knitr::kable(head(data_cleaned[, 1:9]), "pipe")
+```
+
+## Simple Assault Is The Most Common Crime Against Peace Officers
+In this dataset, there are four types of assault against peace officers - aggravated assault, assault, weapon/bodily harm, resist arrest. Assault, also known as simple assault, includes minor injuries, touching, and threatening word or actions, while aggravated includes serious injuries or any conduct involving weapon[@citeassault].
+
+```{r,echo=FALSE,fig.width=8, fig.height=4}
+#### Preamble ####
+# Purpose: Create a plot shows the total number of cases of assaults against peace officers
+# Author: Siming Shan
+# Data: 5 Februrary 2022
+# Contact: siming.shan@mail.utoronto.ca
+# License: MIT
+
+### First create a dataset with only four types of assaults against peace 
+### officers and their corresponding total number of cases
+total_assault <- data_cleaned %>% group_by(assault_subtype) %>% summarise(total_count=sum(count))
+
+
+### create the plot, change the name of x-axis for aesthetic purposes
+total_assault %>% 
+  ggplot(aes(x=assault_subtype,y=total_count)) +
+  geom_bar(stat="identity", fill = "skyblue")+
+  theme_classic()+
+  scale_x_discrete(labels= c("Aggravated Assault", "Assault","Weapon/Bodily Harm","Resist Arrest"))+
+  labs(x="Types of Assaults Against Peace Officer",
+       y="Count of Assaults From 2014 - 2020")+
+  ggtitle("Subtypes of Assault vs Count of identified victims")+ 
+  theme(plot.title = element_text(size = 15, face = "bold"))+
+  geom_text(aes(label=total_count),vjust=-0.3)
+```
 
 # Conclusion
 
