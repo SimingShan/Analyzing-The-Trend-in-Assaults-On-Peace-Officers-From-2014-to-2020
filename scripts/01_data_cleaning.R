@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: cleaning the dataset
+# Purpose: cleaning the dataset, and subset the dataset 
 # Author: Siming Shan
 # Data: 1 Februrary 2022
 # Contact: siming.shan@mail.utoronto.ca
@@ -21,4 +21,5 @@ data_cleaned <- raw_data %>% select(-c(2,12))
 data_cleaned <- clean_names(data_cleaned)
 ### since I am only interested in assaults against peace officers, delete all
 ### other irrelevant observations
-data_cleaned <- data_cleaned %>% filter(assault_subtype != "N/A" & assault_subtype !="Other")
+data_cleaned <- data_cleaned %>% 
+  filter(assault_subtype != "N/A" & assault_subtype !="Other")
