@@ -5,7 +5,7 @@
 # Contact: siming.shan@mail.utoronto.ca
 # License: MIT
 
-### First create a dataset that is group by age cohort 
+### First create a dataset that is group by age cohort  
 ### and their corresponding total number of cases
 age_assault <- data_cleaned %>% group_by(age_cohort) %>% summarise(age_count=sum(count))
 
