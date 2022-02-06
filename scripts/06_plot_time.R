@@ -1,3 +1,4 @@
+#### Preamble ####
 # Purpose: Create a bar plot of assault cases, classified by time
 # Author: Siming Shan
 # Data: 5 Februrary 2022
@@ -11,7 +12,7 @@ time_assault <- data_cleaned %>% group_by(reported_year) %>% summarise(time_coun
 ### create the plot
 time_assault %>% 
   ggplot(aes(x=reported_year,y=time_count)) +
-  geom_line(stat="identity",color = "red1")+
+  geom_line(stat="identity",color = "darksalmon")+
   theme_classic()+
   labs(x="Year",
        y="Count of Assaults From 2014 - 2020")+

@@ -1,0 +1,53 @@
+---
+title: "My title"
+subtitle: "My subtitle"
+author: 
+  - Siming Shan
+thanks: "Code and data are available at: https://github.com/SimingShan/STA304-Project-1"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+output:
+  bookdown::pdf_document2
+toc: FALSE
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+```
+
+
+# Introduction
+
+# Data
+## Raw Dataset Introduction
+I utilized an Annual Victims of crime report[@citedata] from Toronto Open Data
+portal, using the `opendatatoronto` package[@citeopendatatoronto] to have a better understanding of the relationship between peace officers and the communities in Toronto. This data was published by Toronto Police Services, and the last time the data was refreshed on Aug 12, 2021. There are 854 observations in the raw data, each observation has 12 variables - id, index, ReportedYear, Category, Subtype, AssaultSubtype, Sex, AgeGroup, AgeCohort, Count, ObjectId, geometry. This dataset collects victim of crime which crime was reported between 2014 and 2020, and the victim of the crimes are classified as peace officers, other, and unknown. Subtypes of assault against peace officers include Aggravated Peace Officer, Assault Peace Officer, Assault Peace Officer Weapon/Bodily Harm, and Assault Resist Arrest. Since I am only interested in crimes against peace officers, I cleaned the data and extracted essential observations by using `R`[@citeR], `tidyverse`[@citetidyverse], `dplyr`[@citedplyr], and `janitor`[@citejanitor].
+
+## Cleaning Process And Cleaned Dataset
+The columns "index" and "geometry" of the dataset are all `NA` and `Null`, and the column "ObjectId" is redundant, thus I removed these columns as they did not provide useful information for analysis. Then I modified each column name to make them more organized. Finally, I extracted the observation that only peace officers were victims.
+
+The cleaned dataset has 168 observations, each observations has 9 variables:
+
+* id: Unique row identifier
+* reported_year: Year crime was reported
+* category: Crime category
+* subtype: Crime category subtype
+* assault_subtype: Breakdown of assault subtypes
+* sex: Sex of identified victim
+* age_group: Age group of identified victim, adult or youth
+* age_cohort: Age cohort of identified victim
+* count: Count of identified victims
+
+
+
+# Conclusion
+
+\newpage
+
+# Reference
+
+
+

@@ -16,7 +16,7 @@ raw_data <-
 
 ### since the columns "index" and "geometry" of the dataset are all NAs 
 ### and Nulls, thus we delete these columns
-data_cleaned <- raw_data %>% select(-c(2,12))
+data_cleaned <- raw_data %>% select(-c(2,11,12))
 ### clean the name of columns
 data_cleaned <- clean_names(data_cleaned)
 ### since I am only interested in assaults against peace officers, delete all
