@@ -46,14 +46,14 @@ raw_data <- resources %>% get_resource()
 # Introduction
 In January 2022, two NYPD police officers Jason Rivera, 22, and Wilbert Mora, 27, were shot and killed while investigating a family disputes. On 28th January 2022, Thousands of NYPD officers gathered at Officer Jason Rivera's funeral to pay their last respects to these two men. In New York City, five police officers have been shot in the same month, and the discordant relationship between the police and the community is undoubtedly one of the reasons why there are so many assaults on the police officers in New York City, as Jason Rivera said before his death, when he was young, he saw his Inwood neighborhood was at odds with the NYPD, which is why he wanted to be a police officer to improve police-community relations[@citejason].
 
-In this paper, I examine the number and trend of assaults on Toronto peace officers from 2014 to 2020.I produced two tables and three graphs  as indicators of police-community relations and guidence for peace officers to protect themselves. I found that simple assault is the most common assault on peace officers, younger officers are more likely to be assaulted, and the trend towards assaulting peace officers is decreasing.
+In this paper, I examine the number and trend of assaults on Toronto peace officers from 2014 to 2020.I produced two tables and three graphs as indicators of police-community relations and guidence for peace officers to protect themselves. I found that simple assault is the most common assault on peace officers, younger officers are more likely to be assaulted, and the trend towards assaulting peace officers is decreasing.
 
-The remainder of this paper is structured as follows: section 2 will discuss data and findings, section 3 will discuss the conclusion, section 4 is the reference list.
+The remainder of this paper is structured as follows: section 2 will discuss data and findings which contains 2 tables and 3 graphs, section 3 is a brief conclusion, section 4 is the reference list.
 
 # Data
 ## Raw Dataset Introduction
 I utilized an Annual Victims of crime report from Toronto Open Data
-portal,t his dataset was extracted from the Toronto’s Police Service Annual Statistical Report, which is a comprehensive overview of police related statistics collected by Toronto Police Services, so it is a very strong and reliable dataset,the only weakness of this dataset is that if a person is victimized multiple times during the same period of time, he may be counted again[@citedata]. I imported this dataset by using the `opendatatoronto` package[@citeopendatatoronto] to have a better understanding of the relationship between peace officers and the communities in Toronto. This data was published by Toronto Police Services, and the last time the data was refreshed on Aug 12, 2021. There are 854 observations in the raw data, each observation has 12 variables - id, index, reportedyear, category, subtype, assaultsubtype, sex, agegroup, agecohort, count, objectid, geometry. This dataset collects victim of crime which crime was reported between 2014 and 2020, and the victim of the crimes are classified as peace officers, other, and unknown. Subtypes of assault against peace officers include Aggravated Peace Officer, Assault Peace Officer, Assault Peace Officer Weapon/Bodily Harm, and Assault Resist Arrest. Since I am only interested in crimes against peace officers, I cleaned the data and extracted essential observations by using `R`[@citeR], `tidyverse`[@citetidyverse], `dplyr`[@citedplyr], and `janitor`[@citejanitor].
+portal,this dataset was extracted from the Toronto’s Police Service Annual Statistical Report, which is a comprehensive overview of police related statistics collected by Toronto Police Services, so it is a very strong and reliable dataset, the only weakness of this dataset is that if a person is victimized multiple times during the same period of time, he may be counted again[@citedata]. I imported this dataset by using the `opendatatoronto` package[@citeopendatatoronto] to have a better understanding of the police-community relation in Toronto. This data was published by Toronto Police Services, and the last time the data was refreshed on Aug 12, 2021. There are 854 observations in the raw data, each observation has 12 variables - id, index, reportedyear, category, subtype, assaultsubtype, sex, agegroup, agecohort, count, objectid, geometry. This dataset collects crime victims reported between 2014 and 2020, and the crime victims are classified as peace officers, other, and unknown. Subtypes of assault against peace officers include Aggravated Peace Officer, Assault Peace Officer, Assault Peace Officer Weapon/Bodily Harm, and Assault Resist Arrest. Since I am only interested in crimes against peace officers, I cleaned the data and extracted essential observations by using `R`[@citeR], `tidyverse`[@citetidyverse], `dplyr`[@citedplyr], and `janitor`[@citejanitor].
 
 ```{r,echo=FALSE,message=FALSE}
 #### Preamble ####
@@ -77,18 +77,18 @@ data_cleaned <- clean_names(data_cleaned)
 data_cleaned <- data_cleaned %>% 
   filter(assault_subtype != "N/A" & assault_subtype !="Other")
 ```
-## Cleaning Process And Cleaned Dataset
-The columns "index" and "geometry" of the dataset are all `NA` and `Null`, and the column "ObjectId" is redundant with "id", thus I removed these columns as they don't provide useful information for analysis. Then I modified each column name to make them more organized by using the package `janitor`[@citejanitor]. Finally, I extracted the observation that only peace officers were victims.The cleaned dataset has 168 observations, each observations has 9 variables:
+## Cleaning Process And The Cleaned Dataset
+The columns "index" and "geometry" of the dataset are all `NA` and `Null`, and the column "ObjectId" is redundant with "id", thus I removed these columns as they don't provide useful information for this analysis. Then I modified each column name to make them more organized by using the package `janitor`[@citejanitor]. Finally, I extracted the observation that only peace officers were victims. The cleaned dataset has 268 observations, each observations has 9 variables:
 
-* id: Unique row identifier
-* reported_year: Year crime was reported (from 2014 to 2020)
-* category: Crime category
-* subtype: Crime category subtype
-* assault_subtype: Breakdown of assault subtypes
-* sex: Sex of identified victim
-* age_group: Age group of identified victim, adult or youth
-* age_cohort: Age cohort of identified victim
-* count: Count of identified victims
+* id: unique row identifier
+* reported_year: year crime was reported (from 2014 to 2020)
+* category: crime category
+* subtype: crime category subtype
+* assault_subtype: breakdown of assault subtypes
+* sex: sex of identified victim
+* age_group: age group of identified victim, adult or youth
+* age_cohort: age cohort of identified victim
+* count: count of identified victims
 
 A brief view of the dataset made by using knitr[@citeknitr] is shown below:
 
@@ -118,7 +118,7 @@ total_assault <- data_cleaned %>% group_by(assault_subtype) %>% summarise(total_
 ### create the plot, change the name of x-axis for aesthetic purposes
 total_assault %>% 
   ggplot(aes(x=assault_subtype,y=total_count)) +
-  geom_bar(stat="identity", fill = "skyblue")+
+  geom_bar(stat="identity", fill = "red3")+
   theme_classic()+
   scale_x_discrete(labels= c("Aggravated Assault", "Assault","Weapon/Bodily Harm","Resist Arrest"))+
   labs(x="Types of Assaults On Peace Officer",
@@ -160,7 +160,7 @@ age_assault <- age_assault %>% mutate(net_percentage = police_age_percentage - v
 ### create the plot
 age_assault %>% 
   ggplot(aes(x=age_cohort,y=age_count)) +
-  geom_bar(stat="identity", fill = "skyblue")+
+  geom_bar(stat="identity", fill = "red3")+
   theme_classic()+
   labs(x="Age Cohorts of Victims",
        y="Count of Assaults From 2014 - 2020")+
@@ -198,7 +198,7 @@ time_assault <- data_cleaned %>% group_by(reported_year) %>% summarise(time_coun
 ### create the plot
 time_assault %>% 
   ggplot(aes(x=reported_year,y=time_count)) +
-  geom_line(stat="identity",color = "darksalmon")+
+  geom_line(stat="identity",color = "red3")+
   theme_classic()+
   labs(x="Year",
        y="Count of Assaults From 2014 - 2020")+
@@ -217,14 +217,14 @@ The figure above shows that the number of assault on peace officers sharply incr
 
 # Conclusion
 
-The above survey results show that police-community relations in Toronto worsened from 2014 to 2019, but have improved in 2020. For young officers, they should pay more attention to protecting themselves, even if most of the assaults on them are simple assault.
+The above results show that police-community relations in Toronto worsened from 2014 to 2019, but have improved in 2020, which is a remarkable achievement since 2020 is a really fluctuated year. For young officers, they should pay more attention to protecting themselves, even though the data shows that most of the assaults on them are simple assault. Hope the tragedy of Jason Rivera will never happen again. 
 
 
 
 \newpage
 
 
-# Reference
+# References
 
 
 
