@@ -1,11 +1,11 @@
 ---
-title: "My title"
-subtitle: "My subtitle"
+title: "Trend in Assaults On Peace Officers From 2014 to 2020"
+subtitle: "Why Young Peace Officers Should be more self-protective"
 author: 
   - Siming Shan
 thanks: "Code and data are available at: https://github.com/SimingShan/STA304-Project-1"
-date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+date: "06 February 2022"
+abstract: "The past few years have been dramatic, with thousands of movements and protests happening around the world, more clashes between police and civilians, thus an Annual Victims of crime report dataset was pulled from Toronto Open Data portal to to analyze the number and trend of assaults on Toronto peace officers from 2014 to 2020. By analyzing this dataset, we can see that assaults on Toronto peace officers in 2020 has decresed for the first time from 2014-2020, and understand why peace officers should be more protective of themselves."
 output:
   bookdown::pdf_document2
 toc: FALSE
@@ -44,7 +44,11 @@ raw_data <- resources %>% get_resource()
 ```
 
 # Introduction
-In January 2022, two NYPD police officers Jason Riversa, 22 years old, and Wilbert Mora, 27 years old, were shot and killed during their investigation to a domestic incident.
+In January 2022, two NYPD police officers Jason Rivera, 22, and Wilbert Mora, 27, were shot and killed while investigating a family disputes. On 28th January 2022, Thousands of NYPD officers gathered at Officer Jason Rivera's funeral to pay their last respects to these two men. In New York City, five police officers have been shot in the same month, and the discordant relationship between the police and the community is undoubtedly one of the reasons why there are so many assaults on the police officers in New York City, as Jason Rivera said before his death, when he was young, he saw his Inwood neighborhood was at odds with the NYPD, which is why he wanted to be a police officer to improve police-community relations[@citejason].
+
+In this paper, I examine the number and trend of assaults on Toronto peace officers from 2014 to 2020.I produced two tables and three graphs  as indicators of police-community relations and guidence for peace officers to protect themselves. I found that simple assault is the most common assault on peace officers, younger officers are more likely to be assaulted, and the trend towards assaulting peace officers is decreasing.
+
+The remainder of this paper is structured as follows: section 2 will discuss data and findings, section 3 will discuss the conclusion, section 4 is the reference list.
 
 # Data
 ## Raw Dataset Introduction
@@ -95,7 +99,7 @@ knitr::kable(head(data_cleaned[, 1:9]), "pipe", caption = "Cleaned Dataset")
 Table 1: A brief view of the cleaned dataset.
 
 ## Simple Assault Is The Most Common Crime Against Peace Officers
-In this dataset, there are four types of assault against peace officers - aggravated assault, assault, weapon/bodily harm, resist arrest. Assault, also known as simple assault, includes minor injuries, touching, and threatening word or actions, while aggravated includes serious injuries or any conduct involving weapon[@citeassault]. Weapon/bodily harm means hurts and injuries to a person through weapon or physical contact. Resist arrest means attacking peace officers while being arrested. To analysis which subtype of assault is the most common one against peace officers, I made Figure 1 by using `ggplot2` package[@citeggplot].
+In this dataset, there are four types of assault against peace officers - aggravated assault, assault, weapon/bodily harm, resist arrest. Assault, also known as simple assault, includes intentionally causes someone minor injuries, or threaten someone with imminent bodily injury, while aggravated includes causes someone serious injuries or any conduct involving deadly weapon[@citeassault]. Weapon/bodily harm means hurts and injuries to a person through weapon or physical contact. Resist arrest means attacking peace officers while being arrested. To analysis which subtype of assault is the most common one against peace officers, I made Figure 1 by using `ggplot2` package[@citeggplot].
 
 
 ```{r,echo=FALSE,fig.width=6, fig.height=4}
@@ -129,7 +133,7 @@ Figure 1: Total number of cases of each subtype of assault on peace officers fro
 In figure 1, x-axis presents all four subtypes of assault on peace officers, y-axis represents the total number of each subtype of assault from 2014 to 2020. The figure shows the fact that simple assault is the most common assault on peace officers in Toronto, counting for 59.8% of all assault, resist arrest is the second most common assault, counting for 33.6% of all assault, while weapon/bodily harm and aggravated assault counted for only 6.3% and 0.3% of all assault respectively.
 
 ## Younger peace officers more likely to be assaulted
-According to the chart of age distribution of police officers provided by Statistics Canada, there are 2.33% of police officers are between the ages of under 20 and 24, 28.7% of police officers are between the ages of 25 and 34, 37.5% of police officers are between the ages of 35 and 44, and 31.45% of police officers are over 45 years old [@citestatisticscanada]. To investigate whether a certein age cohort of peace officers are more likely to be assaulted, I made a table(Table 2) and a plot(Figure 2) by using knitr[@citeknitr] and ggplot2[@citeggplot] packages to present and compare the age distribution of police officers and age distribution of victims.
+According to the chart of age distribution of police officers provided by Statistics Canada, there are 2.33% of police officers are between the ages of under 20 and 24, 28.7% of police officers are between the ages of 25 and 34, 37.5% of police officers are between the ages of 35 and 44, and 31.45% of police officers are over 45 years old [@citestatisticscanada]. To investigate whether a certain age cohort of peace officers are more likely to be assaulted, I made a table(Table 2) and a plot(Figure 2) by using knitr[@citeknitr] and ggplot2[@citeggplot] packages to present and compare the age distribution of police officers and age distribution of victims.
 
 ```{r,echo=FALSE,fig.width=6, fig.height=4}
 #### Preamble ####
@@ -176,9 +180,49 @@ Table 2: Age distribution of peace officers vs age distribution of victims from 
 
 Figure 2 shows the age distribution of victims, x-axis represents different age cohorts of victim, y-axis represents total number of assault from 2014 to 2020. The plot is highly right skewed, which means most of the victims of assault are younger peace officers, however, It doesn't mean younger peace officers are more likely being assaulted since there are probably more younger peace officers in the first place. To address this issue, I produced Table 2 to compare the age distribution of peace officers and victims. I calculate the net percentage by subtracting the distribution of victim age from the distribution of police age, the smaller the net percentage, the more likely the peace officers in corresponding age cohort will be assaulted. the Table 2 shows the net percentages for the 18-24 and 25-34 age cohorts are -15.08% and -10.19% respectively, and the net percentages for the 35-44 and 45-54 are 16.61% and 11.89% respectively, and the net percentages for other age cohorts are close to 0. As a result, younger peace officers are more likely to be assaulted.
 
+## Assaults on peace officers in Toronto are decreasing
+With more and more social movements and protests taking place over the past few years, it is the duty of peace officers to keep everything safe and organized, which means there were more contact between public and peace officers. To investigate the trend in assaulting peace officers over the past few years, I made a line graph(Figure 3) by using ggplot2(@citeggplot).
+
+```{r,echo=FALSE,fig.width=6, fig.height=4}
+#### Preamble ####
+# Purpose: Create a bar plot of assault cases, classified by time
+# Author: Siming Shan
+# Data: 5 Februrary 2022
+# Contact: siming.shan@mail.utoronto.ca
+# License: MIT
+
+### First create a dataset that is group by time 
+### and their corresponding total number of cases
+time_assault <- data_cleaned %>% group_by(reported_year) %>% summarise(time_count=sum(count))
+
+### create the plot
+time_assault %>% 
+  ggplot(aes(x=reported_year,y=time_count)) +
+  geom_line(stat="identity",color = "darksalmon")+
+  theme_classic()+
+  labs(x="Year",
+       y="Count of Assaults From 2014 - 2020")+
+  ggtitle("Trend In Assaulting Peace Officers")+
+  geom_text(aes(label=time_count),vjust= -0.2)+ 
+  theme(plot.title = element_text(size = 10, face = "bold"))
+
+
+```
+
+Figure 3: The trend in assaulting peace officers from 2014 to 2020
+
+The figure above shows that the number of assault on peace officers sharply increased between 2014 to 2015, then gradually increased between 2015 and 2016, then sharply increased again between 2016 and 2017, then gradually increased between 2017 and 2019, finally sharply decreased from 1052 cases to 801 cases between 2019 and 2020. So overall, the number of assault has been increasing for 5 consecutive years from 2014 to 2019, and finally decreased in 2020.
+
+
+
 # Conclusion
 
+The above survey results show that police-community relations in Toronto worsened from 2014 to 2019, but have improved in 2020. For young officers, they should pay more attention to protecting themselves, even if most of the assaults on them are simple assault.
+
+
+
 \newpage
+
 
 # Reference
 

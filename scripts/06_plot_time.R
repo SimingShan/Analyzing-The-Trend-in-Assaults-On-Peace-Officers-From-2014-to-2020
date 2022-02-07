@@ -18,3 +18,4 @@ time_assault %>%
        y="Count of Assaults From 2014 - 2020")+
   ggtitle("Time vs Count of Identified Victims")+
   geom_text(aes(label=time_count),vjust= -0.2)
+
