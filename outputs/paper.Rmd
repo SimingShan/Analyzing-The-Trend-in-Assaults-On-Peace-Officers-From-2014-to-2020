@@ -49,7 +49,7 @@ In January 2022, two NYPD police officers Jason Riversa, 22 years old, and Wilbe
 # Data
 ## Raw Dataset Introduction
 I utilized an Annual Victims of crime report[@citedata] from Toronto Open Data
-portal, using the `opendatatoronto` package[@citeopendatatoronto] to have a better understanding of the relationship between peace officers and the communities in Toronto. This data was published by Toronto Police Services, and the last time the data was refreshed on Aug 12, 2021. There are 854 observations in the raw data, each observation has 12 variables - id, index, ReportedYear, Category, Subtype, AssaultSubtype, Sex, AgeGroup, AgeCohort, Count, ObjectId, geometry. This dataset collects victim of crime which crime was reported between 2014 and 2020, and the victim of the crimes are classified as peace officers, other, and unknown. Subtypes of assault against peace officers include Aggravated Peace Officer, Assault Peace Officer, Assault Peace Officer Weapon/Bodily Harm, and Assault Resist Arrest. Since I am only interested in crimes against peace officers, I cleaned the data and extracted essential observations by using `R`[@citeR], `tidyverse`[@citetidyverse], `dplyr`[@citedplyr], and `janitor`[@citejanitor].
+portal, using the `opendatatoronto` package[@citeopendatatoronto] to have a better understanding of the relationship between peace officers and the communities in Toronto. This data was published by Toronto Police Services, and the last time the data was refreshed on Aug 12, 2021. There are 854 observations in the raw data, each observation has 12 variables - id, index, reportedyear, category, subtype, assaultsubtype, sex, agegroup, agecohort, count, objectid, geometry. This dataset collects victim of crime which crime was reported between 2014 and 2020, and the victim of the crimes are classified as peace officers, other, and unknown. Subtypes of assault against peace officers include Aggravated Peace Officer, Assault Peace Officer, Assault Peace Officer Weapon/Bodily Harm, and Assault Resist Arrest. Since I am only interested in crimes against peace officers, I cleaned the data and extracted essential observations by using `R`[@citeR], `tidyverse`[@citetidyverse], `dplyr`[@citedplyr], and `janitor`[@citejanitor].
 
 ```{r,echo=FALSE,message=FALSE}
 #### Preamble ####
@@ -74,7 +74,7 @@ data_cleaned <- data_cleaned %>%
   filter(assault_subtype != "N/A" & assault_subtype !="Other")
 ```
 ## Cleaning Process And Cleaned Dataset
-The columns "index" and "geometry" of the dataset are all `NA` and `Null`, and the column "ObjectId" is redundant, thus I removed these columns as they did not provide useful information for analysis. Then I modified each column name to make them more organized by using the package `janitor`[@citejanitor]. Finally, I extracted the observation that only peace officers were victims.The cleaned dataset has 168 observations, each observations has 9 variables:
+The columns "index" and "geometry" of the dataset are all `NA` and `Null`, and the column "ObjectId" is redundant with "id", thus I removed these columns as they don't provide useful information for analysis. Then I modified each column name to make them more organized by using the package `janitor`[@citejanitor]. Finally, I extracted the observation that only peace officers were victims.The cleaned dataset has 168 observations, each observations has 9 variables:
 
 * id: Unique row identifier
 * reported_year: Year crime was reported (from 2014 to 2020)
@@ -89,13 +89,16 @@ The columns "index" and "geometry" of the dataset are all `NA` and `Null`, and t
 A brief view of the dataset made by using knitr[@citeknitr] is shown below:
 
 ```{r,echo=FALSE}
-knitr::kable(head(data_cleaned[, 1:9]), "pipe")
+knitr::kable(head(data_cleaned[, 1:9]), "pipe", caption = "Cleaned Dataset")
 ```
 
-## Simple Assault Is The Most Common Crime Against Peace Officers
-In this dataset, there are four types of assault against peace officers - aggravated assault, assault, weapon/bodily harm, resist arrest. Assault, also known as simple assault, includes minor injuries, touching, and threatening word or actions, while aggravated includes serious injuries or any conduct involving weapon[@citeassault].
+Table 1: A brief view of the cleaned dataset.
 
-```{r,echo=FALSE,fig.width=8, fig.height=4}
+## Simple Assault Is The Most Common Crime Against Peace Officers
+In this dataset, there are four types of assault against peace officers - aggravated assault, assault, weapon/bodily harm, resist arrest. Assault, also known as simple assault, includes minor injuries, touching, and threatening word or actions, while aggravated includes serious injuries or any conduct involving weapon[@citeassault]. Weapon/bodily harm means hurts and injuries to a person through weapon or physical contact. Resist arrest means attacking peace officers while being arrested. To analysis which subtype of assault is the most common one against peace officers, I made Figure 1 by using `ggplot2` package[@citeggplot].
+
+
+```{r,echo=FALSE,fig.width=6, fig.height=4}
 #### Preamble ####
 # Purpose: Create a plot shows the total number of cases of assaults against peace officers
 # Author: Siming Shan
@@ -114,12 +117,64 @@ total_assault %>%
   geom_bar(stat="identity", fill = "skyblue")+
   theme_classic()+
   scale_x_discrete(labels= c("Aggravated Assault", "Assault","Weapon/Bodily Harm","Resist Arrest"))+
-  labs(x="Types of Assaults Against Peace Officer",
+  labs(x="Types of Assaults On Peace Officer",
        y="Count of Assaults From 2014 - 2020")+
-  ggtitle("Subtypes of Assault vs Count of identified victims")+ 
-  theme(plot.title = element_text(size = 15, face = "bold"))+
+  ggtitle("Four Subtypes of Assault")+ 
+  theme(plot.title = element_text(size = 10, face = "bold"))+
   geom_text(aes(label=total_count),vjust=-0.3)
 ```
+
+Figure 1: Total number of cases of each subtype of assault on peace officers from 2014 to 2020.
+
+In figure 1, x-axis presents all four subtypes of assault on peace officers, y-axis represents the total number of each subtype of assault from 2014 to 2020. The figure shows the fact that simple assault is the most common assault on peace officers in Toronto, counting for 59.8% of all assault, resist arrest is the second most common assault, counting for 33.6% of all assault, while weapon/bodily harm and aggravated assault counted for only 6.3% and 0.3% of all assault respectively.
+
+## Younger peace officers more likely to be assaulted
+According to the chart of age distribution of police officers provided by Statistics Canada, there are 2.33% of police officers are between the ages of under 20 and 24, 28.7% of police officers are between the ages of 25 and 34, 37.5% of police officers are between the ages of 35 and 44, and 31.45% of police officers are over 45 years old [@citestatisticscanada]. To investigate whether a certein age cohort of peace officers are more likely to be assaulted, I made a table(Table 2) and a plot(Figure 2) by using knitr[@citeknitr] and ggplot2[@citeggplot] packages to present and compare the age distribution of police officers and age distribution of victims.
+
+```{r,echo=FALSE,fig.width=6, fig.height=4}
+#### Preamble ####
+# Purpose: Create a bar plot of assault cases, classified by age group
+# Author: Siming Shan
+# Data: 5 Februrary 2022
+# Contact: siming.shan@mail.utoronto.ca
+# License: MIT
+
+### First create a dataset that is group by age cohort  
+### and their corresponding total number of cases
+age_assault <- data_cleaned %>% group_by(age_cohort) %>% summarise(age_count=sum(count))
+
+age_assault <- age_assault %>% filter(age_cohort != "Unknown")
+
+sum_age <- sum(age_assault$age_count)
+
+age_assault <- age_assault %>% mutate(police_age_percentage = c(0.018,2.31,28.66,37.53,27.07,3.63,0.75))
+
+age_assault <- age_assault %>% mutate(victim_age_percentage = age_count/sum_age * 100) 
+
+age_assault <- age_assault %>% mutate(net_percentage = police_age_percentage - victim_age_percentage)
+
+### create the plot
+age_assault %>% 
+  ggplot(aes(x=age_cohort,y=age_count)) +
+  geom_bar(stat="identity", fill = "skyblue")+
+  theme_classic()+
+  labs(x="Age Cohorts of Victims",
+       y="Count of Assaults From 2014 - 2020")+
+  ggtitle("Age Cohort Of Identified Victim")+
+  geom_text(aes(label=age_count),vjust=-0.3)+ 
+  theme(plot.title = element_text(size = 10, face = "bold"))
+
+```
+
+Figure 2: Total number of victims of each age cohort from 2014 to 2020.
+
+```{r,echo=FALSE}
+knitr::kable(age_assault,"pipe",digits = 2,caption = "Age Distribution Comparison")
+```
+
+Table 2: Age distribution of peace officers vs age distribution of victims from 2014 to 2020.
+
+Figure 2 shows the age distribution of victims, x-axis represents different age cohorts of victim, y-axis represents total number of assault from 2014 to 2020. The plot is highly right skewed, which means most of the victims of assault are younger peace officers, however, It doesn't mean younger peace officers are more likely being assaulted since there are probably more younger peace officers in the first place. To address this issue, I produced Table 2 to compare the age distribution of peace officers and victims. I calculate the net percentage by subtracting the distribution of victim age from the distribution of police age, the smaller the net percentage, the more likely the peace officers in corresponding age cohort will be assaulted. the Table 2 shows the net percentages for the 18-24 and 25-34 age cohorts are -15.08% and -10.19% respectively, and the net percentages for the 35-44 and 45-54 are 16.61% and 11.89% respectively, and the net percentages for other age cohorts are close to 0. As a result, younger peace officers are more likely to be assaulted.
 
 # Conclusion
 
